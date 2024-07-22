@@ -66,4 +66,19 @@
   body {
     @apply bg-background text-foreground;
   }
+  .flexxer_center_center {
+    @apply flex items-center justify-center;
+  }
+
+  .flexxer_center_start {
+    @apply flex items-center justify-start;
+  }
+
+  .flexxer_start_start {
+    @apply flex items-start justify-start;
+  }
+
+  .flexxer_start_between {
+    @apply flex items-start justify-between;
+  }
 }

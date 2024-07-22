@@ -11,11 +11,11 @@ const page = () => {
         <div className="w-full">
           <Header />
         </div>
-        <div className="flex items-start justify-start min-h-[calc(100vh-56px)]">
-          <div className="w-[20%]">
+        <div className="grid grid-cols-[1fr,5fr] min-h-[calc(100vh-56px)]">
+          <div className="w-full h-full bg-orange-200">
             <Sidebar />
           </div>
-          <div className="flex-1">
+          <div className="h-full">
             <Playarea />
             <Footer />
           </div>
