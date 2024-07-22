@@ -16,7 +16,7 @@ const Sidebar = () => {
                 />
               </div>
               <div className="">
-                <span className="text-white">Dashboard</span>
+                <span className="text-white select-none">Dashboard</span>
               </div>
             </div>
           </li>
