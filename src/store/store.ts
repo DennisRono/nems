@@ -1,8 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loggedReducer from './slices/loggedSlice'
-import currencyReducer from './slices/metaSlice'
-import cartReducer from './slices/cartSlice'
-import adminTabReducer from './slices/admintabSlice'
+import tabReducer from './slices/tabSlice'
 import { persistReducer, persistStore } from 'redux-persist'
 import { combineReducers } from 'redux'
 import storage from './useWebStorage'
@@ -14,9 +12,7 @@ const persistConfig = {
 
 const allReducers = combineReducers({
   logged: loggedReducer,
-  meta: currencyReducer,
-  cart: cartReducer,
-  admintab: adminTabReducer,
+  tab: tabReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, allReducers)

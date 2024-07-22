@@ -12,11 +12,11 @@ const admintabSlice = createSlice({
   name: 'tab',
   initialState,
   reducers: {
-    setAdminTab: (state, action: PayloadAction<LoggedState>) => {
+    setTab: (state, action: PayloadAction<LoggedState>) => {
       return { ...state, ...action.payload }
     },
   },
 })
 
-export const { setAdminTab } = admintabSlice.actions
+export const { setTab } = admintabSlice.actions
 export default admintabSlice.reducer
