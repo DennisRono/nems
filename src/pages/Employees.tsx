@@ -8,10 +8,11 @@ const Employees = () => {
     <div>
       <div className="overflow-x-hidden">
         <section className="container px-4 mx-auto">
+          <h1 className="text-xl font-bold">Employees</h1>
           <div className="flex flex-col">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div className="overflow-hidden border md:rounded-lg">
+                <div className="overflow-hidden md:rounded-lg">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
@@ -64,7 +65,7 @@ const Employees = () => {
                         </th>
 
                         <th scope="col" className="relative py-3.5 px-4">
-                          <span className="sr-only">Actions</span>
+                          <span className="text-black">Actions</span>
                         </th>
                       </tr>
                     </thead>

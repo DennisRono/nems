@@ -1,4 +1,5 @@
 'use client'
+import api from '@/api'
 import Link from 'next/link'
 import React, { FormEvent, useState } from 'react'
 
@@ -12,6 +13,10 @@ const RegisterForm = () => {
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault()
     try {
+      const res: any = await api('POST', '', formData)
+      if (!res.ok) {
+        throw new Error('')
+      }
     } catch (error: any) {}
   }
   return (

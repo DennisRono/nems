@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loggedReducer from './slices/loggedSlice'
 import tabReducer from './slices/tabSlice'
+import sidebarReducer from './slices/sidebarSlice'
 import { persistReducer, persistStore } from 'redux-persist'
 import { combineReducers } from 'redux'
 import storage from './useWebStorage'
@@ -13,6 +14,7 @@ const persistConfig = {
 const allReducers = combineReducers({
   logged: loggedReducer,
   tab: tabReducer,
+  sidebar: sidebarReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, allReducers)
