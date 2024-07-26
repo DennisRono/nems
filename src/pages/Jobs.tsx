@@ -6,7 +6,6 @@ import React from 'react'
 const Jobs = () => {
   return (
     <div>
-      {' '}
       <div>
         <div className="overflow-x-hidden">
           <section className="container px-4 mx-auto">
