@@ -5,6 +5,7 @@ import Employees from '@/pages/Employees'
 import NewJob from '@/pages/NewJob'
 import Jobs from '@/pages/Jobs'
 import Salaries from '@/pages/Salaries'
+import Attendance from '@/pages/Attendance'
 
 const Playarea = () => {
   const playtab = useAppSelector((state) => state.tab).tab
@@ -30,6 +31,8 @@ const Playarea = () => {
         <Jobs />
       ) : playtab === 'salaries' ? (
         <Salaries />
+      ) : playtab === 'attendance' ? (
+        <Attendance />
       ) : (
         <Dash />
       )}

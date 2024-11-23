@@ -27,3 +27,31 @@ interface JobData {
   applicationDeadline: string
   contactEmail: string
 }
+
+interface Employee {
+  id: string
+  name: string
+  department: string
+  position: string
+}
+
+interface AttendanceRecord {
+  id: string
+  employeeId: string
+  date: string
+  checkIn: string
+  checkOut: string
+  status: 'Present' | 'Absent' | 'Late' | 'Early Leave'
+}
+
+interface EmployeeStatus {
+  id: string
+  employeeId: string
+  status: 'Good Standing' | 'Warning' | 'Probation'
+  lastUpdated: string
+}
+
+interface EmployeeAttendance extends Employee {
+  attendance: AttendanceRecord[]
+  status: EmployeeStatus
+}
