@@ -4,8 +4,9 @@ import CustomError from '@/lib/CustomError'
 
 export default async function middleware(request: NextRequest) {
   try {
-    const data = await request.json()
+    console.log('middleware')
   } catch (error: any) {
+    console.log('Error in Middleware')
     const statusCode = error instanceof CustomError ? error.statusCode : 500
     return NextResponse.json({ message: error.message }, { status: statusCode })
   }

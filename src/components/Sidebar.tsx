@@ -97,6 +97,17 @@ const Sidebar = ({ minified = false }) => {
   return (
     <nav className="bg-gray-900 text-gray-100 h-full">
       <ul className="p-4 space-y-2">
+        <li>
+          <button
+            className={`w-full flex items-center ${
+              minified ? 'justify-center' : 'justify-start'
+            } gap-3 p-3 rounded-lg transition-colors`}
+            onClick={() => dispatch(setTab({ tab: 'dashboard' }))}
+            aria-current={playtab === 'dashboard' ? 'dashboard' : undefined}
+          >
+            <span className={`text-sm font-medium`}>N-EMS</span>
+          </button>
+        </li>
         {menuItems.map((item) => (
           <li key={item.key}>
             <button

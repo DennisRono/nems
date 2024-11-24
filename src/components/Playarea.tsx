@@ -6,9 +6,11 @@ import NewJob from '@/pages/NewJob'
 import Jobs from '@/pages/Jobs'
 import Salaries from '@/pages/Salaries'
 import Attendance from '@/pages/Attendance'
+import CreateJobApplicationForm from '@/pages/CreateJobApplicationForm'
 
 const Playarea = () => {
   const playtab = useAppSelector((state) => state.tab).tab
+  const id = useAppSelector((state) => state.cache).cache
   const containerRef: any = useRef(null)
   useEffect(() => {
     if (containerRef.current) {
@@ -33,6 +35,8 @@ const Playarea = () => {
         <Salaries />
       ) : playtab === 'attendance' ? (
         <Attendance />
+      ) : playtab === 'new-job-form' ? (
+        <CreateJobApplicationForm jobid={id} />
       ) : (
         <Dash />
       )}

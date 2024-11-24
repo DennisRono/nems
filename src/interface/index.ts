@@ -55,3 +55,25 @@ interface EmployeeAttendance extends Employee {
   attendance: AttendanceRecord[]
   status: EmployeeStatus
 }
+
+type FieldType = 'input' | 'textarea' | 'select' | 'upload'
+
+interface FormField {
+  id: string
+  label: string
+  type: FieldType
+  required: boolean
+  options?: string[]
+}
+
+interface FormStep {
+  id: string
+  title: string
+  fields: FormField[]
+}
+
+interface JobApplicationForm {
+  id: string
+  title: string
+  steps: FormStep[]
+}

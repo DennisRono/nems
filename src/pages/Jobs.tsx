@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,9 +28,14 @@ import {
   ChevronRight,
   Search,
 } from 'lucide-react'
+import { useAppDispatch } from '@/store/hooks'
+import { setTab } from '@/store/slices/tabSlice'
+import api from '@/api'
+import { toast } from 'react-toastify'
+import { setCache } from '@/store/slices/stackcacheSlice'
 
 type Job = {
-  id: number
+  _id: string
   title: string
   company: string
   location: string
@@ -39,55 +44,8 @@ type Job = {
   postedDate: string
 }
 
-const jobsData: Job[] = [
-  {
-    id: 1,
-    title: 'Frontend Developer',
-    company: 'TechCorp',
-    location: 'New York, NY',
-    type: 'Full-time',
-    salary: '$80,000 - $120,000',
-    postedDate: '2023-05-15',
-  },
-  {
-    id: 2,
-    title: 'Backend Engineer',
-    company: 'DataSystems',
-    location: 'San Francisco, CA',
-    type: 'Full-time',
-    salary: '$100,000 - $150,000',
-    postedDate: '2023-05-14',
-  },
-  {
-    id: 3,
-    title: 'UX Designer',
-    company: 'CreativeSolutions',
-    location: 'Chicago, IL',
-    type: 'Contract',
-    salary: '$70 - $100 per hour',
-    postedDate: '2023-05-13',
-  },
-  {
-    id: 4,
-    title: 'Data Scientist',
-    company: 'AIInnovate',
-    location: 'Boston, MA',
-    type: 'Full-time',
-    salary: '$90,000 - $140,000',
-    postedDate: '2023-05-12',
-  },
-  {
-    id: 5,
-    title: 'DevOps Engineer',
-    company: 'CloudTech',
-    location: 'Seattle, WA',
-    type: 'Full-time',
-    salary: '$110,000 - $160,000',
-    postedDate: '2023-05-11',
-  },
-]
-
 export default function Jobs() {
+  const [jobsData, setJobData] = useState<Job[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [jobType, setJobType] = useState('all')
   const [location, setLocation] = useState('')
@@ -95,6 +53,26 @@ export default function Jobs() {
   const [remoteOnly, setRemoteOnly] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const jobsPerPage = 5
+
+  const dispatch = useAppDispatch()
+
+  const fetchJobs = async () => {
+    try {
+      const res: any = await api('GET', 'job')
+      const data = await res.json()
+      if (res.ok) {
+        setJobData(data)
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (error: any) {
+      toast(error.message, { type: 'error' })
+    }
+  }
+
+  useEffect(() => {
+    fetchJobs()
+  }, [])
 
   const parseSalary = (salary: string) => {
     const matches = salary.match(/\d+/g)
@@ -136,10 +114,6 @@ export default function Jobs() {
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob)
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage)
-
-  console.log('Filtered Jobs:', filteredJobs)
-  console.log('Current Page:', currentPage)
-  console.log('Jobs on Current Page:', currentJobs)
 
   return (
     <div className="h-full py-8 px-4 sm:px-6 lg:px-8">
@@ -217,7 +191,7 @@ export default function Jobs() {
 
         <div className="space-y-6 pb-6">
           {currentJobs.map((job) => (
-            <Card key={job.id}>
+            <Card key={job._id}>
               <CardHeader>
                 <CardTitle className="text-xl font-bold">{job.title}</CardTitle>
               </CardHeader>
@@ -245,7 +219,15 @@ export default function Jobs() {
                 <span className="text-sm text-gray-500">
                   Posted on {job.postedDate}
                 </span>
-                <Button variant="outline">Apply Now</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    dispatch(setTab({ tab: 'new-job-form' }))
+                    dispatch(setCache({ cache: job._id }))
+                  }}
+                >
+                  Create Application Form
+                </Button>
               </CardFooter>
             </Card>
           ))}

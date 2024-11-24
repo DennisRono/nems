@@ -4,19 +4,26 @@ import CustomError from '@/lib/CustomError'
 import connectDB from '@/config/database_connect'
 import Job from '@/schemas/mongoose/JobsSchema'
 
-export async function POST(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { slug: string } }
+) {
   try {
-    const data = await request.json()
+    const slug: string = await params.slug
+    if (!slug) {
+      throw new CustomError('no id in URL', 500)
+    }
     const isConnected = await connectDB()
     if (!isConnected) {
       throw new CustomError('Failed to connect to database', 500)
     }
-    const newJob = new Job(data)
-    await newJob.save()
-    return NextResponse.json(
-      { message: 'Job posted successfully!', job: newJob },
-      { status: 201 }
-    )
+
+    const jobs = await Job.findById(slug)
+    if (!jobs) {
+      return NextResponse.json({ message: 'Job not found' }, { status: 404 })
+    } else {
+      return NextResponse.json(jobs)
+    }
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       return NextResponse.json({ message: error.message }, { status: 400 })
