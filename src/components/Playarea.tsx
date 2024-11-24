@@ -10,7 +10,7 @@ import CreateJobApplicationForm from '@/pages/CreateJobApplicationForm'
 
 const Playarea = () => {
   const playtab = useAppSelector((state) => state.tab).tab
-  const id = useAppSelector((state) => state.cache).cache
+  const job = useAppSelector((state) => state.cache).cache
   const containerRef: any = useRef(null)
   useEffect(() => {
     if (containerRef.current) {
@@ -36,7 +36,7 @@ const Playarea = () => {
       ) : playtab === 'attendance' ? (
         <Attendance />
       ) : playtab === 'new-job-form' ? (
-        <CreateJobApplicationForm jobid={id} />
+        <CreateJobApplicationForm job={job} />
       ) : (
         <Dash />
       )}

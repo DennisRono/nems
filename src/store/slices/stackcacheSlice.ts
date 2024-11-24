@@ -1,11 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 interface CacheState {
-  cache: string
+  cache: any
 }
 
 const initialState: CacheState = {
-  cache: '',
+  cache: {},
 }
 
 const cacheSlice = createSlice({

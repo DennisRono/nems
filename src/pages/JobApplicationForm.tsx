@@ -1,6 +1,9 @@
 'use client'
+import api from '@/api'
 import { useAppSelector } from '@/store/hooks'
 import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const JobApplicationForm = dynamic(
   () => import('@/components/job-application-form'),
@@ -41,9 +44,26 @@ const mockForm: JobApplicationForm = {
       ],
     },
   ],
+  job: '',
 }
 
-export default function JobApplicationPage() {
-  const job_id = useAppSelector((state) => state.cache).cache
+export default function JobApplicationPage({ jobid }: { jobid: string }) {
+  const [jobsData, setJobData] = useState<Job[]>([])
+  const fetchJobs = async () => {
+    try {
+      const res: any = await api('GET', 'job')
+      const data = await res.json()
+      if (res.ok) {
+        setJobData(data)
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (error: any) {
+      toast(error.message, { type: 'error' })
+    }
+  }
+  useEffect(() => {
+    fetchJobs()
+  }, [])
   return <JobApplicationForm form={mockForm} />
 }

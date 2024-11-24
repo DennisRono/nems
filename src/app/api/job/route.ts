@@ -30,14 +30,29 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  console.log('hit')
   try {
     const isConnected = await connectDB()
     if (!isConnected) {
       throw new CustomError('Failed to connect to database', 500)
     }
-    const jobs = await Job.find({})
-    return NextResponse.json(jobs)
+
+    const jobsWithForms = await Job.aggregate([
+      {
+        $lookup: {
+          from: 'jobapplicationforms',
+          localField: '_id',
+          foreignField: 'job',
+          as: 'application_form',
+        },
+      },
+      {
+        $addFields: {
+          application_form: { $arrayElemAt: ['$application_form', 0] },
+        },
+      },
+    ])
+
+    return NextResponse.json(jobsWithForms)
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       return NextResponse.json({ message: error.message }, { status: 400 })

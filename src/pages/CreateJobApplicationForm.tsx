@@ -27,33 +27,13 @@ type Job = {
   postedDate: string
 }
 
-export default function CreateJobApplicationForm({ jobid }: { jobid: string }) {
-  const [job, setJob] = useState<Job | null>(null)
+export default function CreateJobApplicationForm({ job }: { job: Job }) {
   const [form, setForm] = useState<JobApplicationForm>({
     id: uuidv4(),
-    title: job?.title || '',
+    title: job.title,
     steps: [{ id: uuidv4(), title: 'Step 1', fields: [] }],
+    job: job._id,
   })
-
-  const fetchJobs = async () => {
-    try {
-      const res: any = await api('GET', `job/${jobid}`)
-      const data = await res.json()
-      if (res.ok) {
-        setJob(data)
-      } else {
-        throw new Error(data.message)
-      }
-    } catch (error: any) {
-      toast(error.message, { type: 'error' })
-    }
-  }
-
-  useEffect(() => {
-    fetchJobs()
-  }, [])
-
-  console.log(job)
 
   const addStep = () => {
     setForm((prev) => ({
@@ -193,25 +173,29 @@ export default function CreateJobApplicationForm({ jobid }: { jobid: string }) {
     }))
   }
 
-  const saveForm = () => {
+  const saveForm = async () => {
     console.log('Saving form:', form)
-    // Here you would typically send the form data to your backend
+    try {
+      const res: any = await api('POST', 'job/form', form)
+      const data = await res.json()
+      if (res.ok) {
+        toast(data.message, { type: 'success' })
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (error: any) {
+      toast(error.message, { type: 'error' })
+    }
   }
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Create Job Application Form</h1>
-      <div className="mb-4">
-        <Label htmlFor="formTitle">Form Title</Label>
-        <Input
-          id="formTitle"
-          value={form.title}
-          onChange={(e) =>
-            setForm((prev) => ({ ...prev, title: e.target.value }))
-          }
-          className="mt-1"
-        />
-      </div>
+      <h1 className="text-3xl mb-6">
+        <span className="font-bold">
+          {job.title} (#ID:{job._id.toUpperCase()})
+        </span>
+      </h1>
+
       {form.steps.map((step, stepIndex) => (
         <Card key={step.id} className="mb-6">
           <CardHeader>

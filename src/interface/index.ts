@@ -73,7 +73,20 @@ interface FormStep {
 }
 
 interface JobApplicationForm {
+  _id?: string
   id: string
   title: string
   steps: FormStep[]
+  job: string
+}
+
+type Job = {
+  _id: string
+  title: string
+  company: string
+  location: string
+  type: string
+  salary: string
+  postedDate: string
+  application_form?: JobApplicationForm
 }

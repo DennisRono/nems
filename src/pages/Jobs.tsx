@@ -33,16 +33,7 @@ import { setTab } from '@/store/slices/tabSlice'
 import api from '@/api'
 import { toast } from 'react-toastify'
 import { setCache } from '@/store/slices/stackcacheSlice'
-
-type Job = {
-  _id: string
-  title: string
-  company: string
-  location: string
-  type: string
-  salary: string
-  postedDate: string
-}
+import { useRouter } from 'next/navigation'
 
 export default function Jobs() {
   const [jobsData, setJobData] = useState<Job[]>([])
@@ -55,6 +46,7 @@ export default function Jobs() {
   const jobsPerPage = 5
 
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const fetchJobs = async () => {
     try {
@@ -190,8 +182,19 @@ export default function Jobs() {
         </div>
 
         <div className="space-y-6 pb-6">
-          {currentJobs.map((job) => (
-            <Card key={job._id}>
+          {currentJobs.map((job: any) => (
+            <Card
+              key={job._id}
+              onClick={() =>
+                job.application_form
+                  ? router.push(`/job/${job.application_form?._id}`, {
+                      scroll: true,
+                    })
+                  : () => {}
+              }
+              className="cursor-pointer"
+              title={job.title}
+            >
               <CardHeader>
                 <CardTitle className="text-xl font-bold">{job.title}</CardTitle>
               </CardHeader>
@@ -219,15 +222,17 @@ export default function Jobs() {
                 <span className="text-sm text-gray-500">
                   Posted on {job.postedDate}
                 </span>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    dispatch(setTab({ tab: 'new-job-form' }))
-                    dispatch(setCache({ cache: job._id }))
-                  }}
-                >
-                  Create Application Form
-                </Button>
+                {!job.application_form ? (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      dispatch(setTab({ tab: 'new-job-form' }))
+                      dispatch(setCache({ cache: job }))
+                    }}
+                  >
+                    Create Application Form
+                  </Button>
+                ) : null}
               </CardFooter>
             </Card>
           ))}
