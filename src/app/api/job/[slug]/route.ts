@@ -6,10 +6,11 @@ import Job from '@/schemas/mongoose/JobsSchema'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const slug: string = await params.slug
+    const params = await props.params
+    const slug: string = params.slug
     if (!slug) {
       throw new CustomError('no id in URL', 500)
     }
