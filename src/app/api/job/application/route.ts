@@ -2,29 +2,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import CustomError from '@/lib/CustomError'
 import connectDB from '@/config/database_connect'
-import Job from '@/schemas/mongoose/JobsSchema'
+import JobApplication from '@/schemas/mongoose/JobApplicationSchema'
 
-export async function GET(
-  request: NextRequest,
-  props: { params: Promise<{ slug: string }> }
-) {
+export async function POST(request: NextRequest) {
   try {
-    const params = await props.params
-    const slug: string = params.slug
-    if (!slug) {
-      throw new CustomError('no id in URL', 500)
-    }
+    const data = await request.json()
     const isConnected = await connectDB()
     if (!isConnected) {
       throw new CustomError('Failed to connect to database', 500)
     }
-    console.log(slug)
-    const jobs = await Job.findById(slug)
-    if (!jobs) {
-      return NextResponse.json({ message: 'Job not found' }, { status: 404 })
-    } else {
-      return NextResponse.json(jobs)
-    }
+    const newJobApplication = new JobApplication(data)
+    await newJobApplication.save()
+    return NextResponse.json(
+      {
+        message: 'Applied for Job successfully!',
+        application: newJobApplication,
+      },
+      { status: 201 }
+    )
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       return NextResponse.json({ message: error.message }, { status: 400 })

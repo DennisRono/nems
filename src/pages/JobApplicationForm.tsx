@@ -1,69 +1,89 @@
 'use client'
+
 import api from '@/api'
-import { useAppSelector } from '@/store/hooks'
+import SingleJob from '@/components/SingleJob'
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { Loader2 } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const JobApplicationForm = dynamic(
   () => import('@/components/job-application-form'),
   { ssr: false }
 )
 
-const mockForm: JobApplicationForm = {
-  id: '1',
-  title: 'Software Developer Application',
-  steps: [
-    {
-      id: '1',
-      title: 'Personal Information',
-      fields: [
-        { id: 'name', label: 'Full Name', type: 'input', required: true },
-        { id: 'email', label: 'Email', type: 'input', required: true },
-        { id: 'phone', label: 'Phone Number', type: 'input', required: false },
-      ],
-    },
-    {
-      id: '2',
-      title: 'Professional Information',
-      fields: [
-        {
-          id: 'experience',
-          label: 'Years of Experience',
-          type: 'select',
-          required: true,
-          options: ['0-1', '1-3', '3-5', '5+'],
-        },
-        { id: 'skills', label: 'Skills', type: 'textarea', required: true },
-        {
-          id: 'resume',
-          label: 'Upload Resume',
-          type: 'upload',
-          required: true,
-        },
-      ],
-    },
-  ],
-  job: '',
-}
-
 export default function JobApplicationPage({ jobid }: { jobid: string }) {
-  const [jobsData, setJobData] = useState<Job[]>([])
+  const [jobForm, setJobForm] = useState<JobApplicationForm | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [active, setIsActive] = useState<string>('description')
+
   const fetchJobs = async () => {
     try {
-      const res: any = await api('GET', 'job')
+      setIsLoading(true)
+      const res: any = await api('GET', `job/form/${jobid}`)
       const data = await res.json()
       if (res.ok) {
-        setJobData(data)
+        setJobForm(data)
       } else {
         throw new Error(data.message)
       }
     } catch (error: any) {
       toast(error.message, { type: 'error' })
+    } finally {
+      setIsLoading(false)
     }
   }
+
   useEffect(() => {
     fetchJobs()
-  }, [])
-  return <JobApplicationForm form={mockForm} />
+  }, [jobid])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (!jobForm) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Card>
+          <CardContent>
+            <p className="text-center">No job application form found.</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative w-full min-h-screen h-auto overflow-hidden">
+      <div className="flex items-center justify-center py-10">
+        <div className="w-full max-w-4xl">
+          <div className="relative overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{
+                transform:
+                  active === 'description'
+                    ? 'translateX(0%)'
+                    : 'translateX(-50%)',
+                width: '200%',
+              }}
+            >
+              <div className="w-full flex-shrink-0">
+                <SingleJob jobid={jobForm.job} setIsActive={setIsActive} />
+              </div>
+              <div className="w-full flex-shrink-0">
+                <JobApplicationForm form={jobForm} setIsActive={setIsActive} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -1,8 +1,6 @@
 const api = async (method = 'GET', slug = '', data = {}, headers = {}) => {
+  console.log(slug)
   try {
-    const respip = await fetch('https://api.ipify.org/?format=json')
-    const ipData = await respip.json()
-
     const origin =
       typeof window !== 'undefined' && window.location.origin
         ? window.location.origin
@@ -10,7 +8,7 @@ const api = async (method = 'GET', slug = '', data = {}, headers = {}) => {
 
     const config: any = {
       method: method,
-      headers: { ...headers, ip: ipData.ip },
+      headers: { ...headers },
       redirect: 'follow',
       cache: 'no-store',
     }

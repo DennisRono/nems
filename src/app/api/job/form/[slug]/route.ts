@@ -19,11 +19,11 @@ export async function GET(
       throw new CustomError('Failed to connect to database', 500)
     }
 
-    const form = await JobApplicationForm.find({ job: slug })
+    const form = await JobApplicationForm.findById(slug)
     if (!form) {
       return NextResponse.json({ message: 'Form not found' }, { status: 404 })
     } else {
-      return NextResponse.json(form[0])
+      return NextResponse.json(form)
     }
   } catch (error: any) {
     if (error.name === 'ValidationError') {

@@ -59,6 +59,7 @@ interface EmployeeAttendance extends Employee {
 type FieldType = 'input' | 'textarea' | 'select' | 'upload'
 
 interface FormField {
+  _id?: string
   id: string
   label: string
   type: FieldType

@@ -95,15 +95,15 @@ const Sidebar = ({ minified = false }) => {
     },
   ]
   return (
-    <nav className="bg-gray-900 text-gray-100 h-full">
+    <nav className="bg-gray-900 text-gray-100 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-transparent">
       <ul className="p-4 space-y-2">
-        <li>
+        <li key={'sdfgsfgdfs'}>
           <button
             className={`w-full flex items-center ${
               minified ? 'justify-center' : 'justify-start'
             } gap-3 p-3 rounded-lg transition-colors`}
             onClick={() => dispatch(setTab({ tab: 'dashboard' }))}
-            aria-current={playtab === 'dashboard' ? 'dashboard' : undefined}
+            aria-current={playtab === 'dashboard' ? 'page' : undefined}
           >
             <span className={`text-sm font-medium`}>N-EMS</span>
           </button>

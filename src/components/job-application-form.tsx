@@ -20,14 +20,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import api from '@/api'
+import { toast } from 'react-toastify'
+import { transformToJobApplicationPayload } from '@/lib/transform'
 
 interface JobApplicationFormProps {
   form: JobApplicationForm
+  setIsActive: (value: any) => void
 }
 
 type ValidationSchema = Yup.ObjectSchema<any>
 
-export default function JobApplicationForm({ form }: JobApplicationFormProps) {
+export default function JobApplicationForm({
+  form,
+  setIsActive,
+}: JobApplicationFormProps) {
   const [currentStep, setCurrentStep] = useState(0)
 
   const generateValidationSchema = (fields: FormField[]): ValidationSchema => {
@@ -149,19 +156,48 @@ export default function JobApplicationForm({ form }: JobApplicationFormProps) {
       validationSchema={generateValidationSchema(
         form.steps[currentStep].fields
       )}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         if (currentStep < form.steps.length - 1) {
           setCurrentStep((prev) => prev + 1)
           setSubmitting(false)
         } else {
-          console.log(values)
+          // save user application for the job
+          const application = transformToJobApplicationPayload(
+            form?._id || 'noformidfound',
+            form?.job || 'nojobidfound',
+            '67419e53d43663014896a4f4',
+            form.steps,
+            values
+          )
+          console.log(application)
+          try {
+            const res: any = await api('POST', `job/application`, application)
+            const data = await res.json()
+            if (res.ok) {
+              toast(data.message, { type: 'success' })
+            } else {
+              throw new Error(data.message)
+            }
+          } catch (error: any) {
+            toast(error.message, { type: 'error' })
+          }
           setSubmitting(false)
         }
       }}
     >
       {({ isSubmitting, errors, touched }) => (
         <Form className="container mx-auto py-8">
-          <h1 className="text-3xl font-bold mb-6">{form.title}</h1>
+          <div className="w-full flex items-center justify-between mb-6">
+            <h1 className="text-3xl font-bold">{form.title}</h1>
+            <Button
+              type="button"
+              onClick={() => {
+                setIsActive('description')
+              }}
+            >
+              Job Description
+            </Button>
+          </div>
           <Card>
             <CardHeader>
               <CardTitle>{form.steps[currentStep].title}</CardTitle>
