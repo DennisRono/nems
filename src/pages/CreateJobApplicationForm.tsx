@@ -32,7 +32,7 @@ export default function CreateJobApplicationForm({ job }: { job: Job }) {
     id: uuidv4(),
     title: job?.title || '',
     steps: [{ id: uuidv4(), title: 'Step 1', fields: [] }],
-    job: job._id,
+    job: job?._id || '',
   })
 
   const addStep = () => {
