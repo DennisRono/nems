@@ -30,7 +30,7 @@ type Job = {
 export default function CreateJobApplicationForm({ job }: { job: Job }) {
   const [form, setForm] = useState<JobApplicationForm>({
     id: uuidv4(),
-    title: job.title,
+    title: job?.title || '',
     steps: [{ id: uuidv4(), title: 'Step 1', fields: [] }],
     job: job._id,
   })
