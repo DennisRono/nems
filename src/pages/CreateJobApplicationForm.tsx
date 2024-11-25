@@ -192,7 +192,7 @@ export default function CreateJobApplicationForm({ job }: { job: Job }) {
     <div className="container mx-auto py-8">
       <h1 className="text-3xl mb-6">
         <span className="font-bold">
-          {job?.title} (#ID:{job._id.toUpperCase()})
+          {job?.title} (#ID:{job?._id.toUpperCase()})
         </span>
       </h1>
 
