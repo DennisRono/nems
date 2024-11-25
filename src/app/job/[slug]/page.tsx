@@ -1,6 +1,6 @@
 import Footer from '@/components/user/Footer'
 import Header from '@/components/user/Header'
-import JobApplicationPage from '@/pages/JobApplicationForm'
+import JobApplicationPage from '@/views/JobApplicationForm'
 import React from 'react'
 
 const page = async (props: any) => {
