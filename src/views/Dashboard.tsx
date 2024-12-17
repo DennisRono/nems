@@ -107,59 +107,6 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Employee Growth</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                count: {
-                  label: 'Employee Count',
-                  color: 'hsl(var(--chart-1))',
-                },
-              }}
-              className="h-[300px]"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={employeeGrowth}>
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="count" fill="var(--color-count)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card className="col-span-3 !overflow-hidden">
-          <CardHeader>
-            <CardTitle>Department Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                count: {
-                  label: 'Employee Count',
-                  color: 'hsl(var(--chart-2))',
-                },
-              }}
-              className="h-[300px] px-0"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={departmentDistribution} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis dataKey="department" type="category" />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="count" fill="var(--color-count)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-4">
         <Card className="col-span-2">
           <CardHeader>

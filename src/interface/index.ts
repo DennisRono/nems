@@ -56,15 +56,32 @@ interface EmployeeAttendance extends Employee {
   status: EmployeeStatus
 }
 
+interface IGroupField {
+  label: string
+  type: 'input' | 'select' | 'textarea'
+  description?: string
+  options?: string[]
+}
+
 type FieldType = 'input' | 'textarea' | 'select' | 'upload'
 
 interface FormField {
   _id?: string
   id: string
   label: string
-  type: FieldType
+  type:
+    | 'input'
+    | 'textarea'
+    | 'select'
+    | 'upload'
+    | 'radio'
+    | 'checkbox'
+    | 'input-group'
   required: boolean
+  description?: string
   options?: string[]
+  groupFields?: IGroupField[]
+  isRepeatable?: boolean
 }
 
 interface FormStep {
@@ -86,7 +103,7 @@ type Job = {
   title: string
   company: string
   location: string
-  type: string
+  employmentType: string
   salary: string
   postedDate: string
   application_form?: JobApplicationForm

@@ -13,6 +13,7 @@ interface IJob extends Document {
   aboutCompany: string
   benefits: string[]
   applicationDeadline: Date
+  job_form_id: mongoose.Schema.Types.ObjectId
   contactEmail: string
 }
 

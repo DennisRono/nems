@@ -161,68 +161,6 @@ export default function Salaries() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Salary Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={filteredData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="jobTitle" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="averageSalary" fill="#000000" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Salary Statistics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label>Average Salary</Label>
-                  <div className="text-3xl font-bold">
-                    $
-                    {Math.round(
-                      filteredData.reduce(
-                        (acc, item) => acc + item.averageSalary,
-                        0
-                      ) / filteredData.length
-                    ).toLocaleString()}
-                  </div>
-                </div>
-                <div>
-                  <Label>Highest Paying Job</Label>
-                  <div className="text-xl font-semibold">
-                    {
-                      filteredData.reduce((max, item) =>
-                        max.averageSalary > item.averageSalary ? max : item
-                      ).jobTitle
-                    }
-                  </div>
-                </div>
-                <div>
-                  <Label>Lowest Paying Job</Label>
-                  <div className="text-xl font-semibold">
-                    {
-                      filteredData.reduce((min, item) =>
-                        min.averageSalary < item.averageSalary ? min : item
-                      ).jobTitle
-                    }
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         <Card>
           <CardHeader>
             <CardTitle>Detailed Salary Information</CardTitle>

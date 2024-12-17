@@ -4,18 +4,30 @@ import {
   Twitter,
   LinkedinIcon as LinkedIn,
   Instagram,
+  Github,
 } from 'lucide-react'
+import Image from 'next/image'
+import Logo from '@/assets/images/Circle_Logo.svg'
 
 const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl font-bold mb-4">CareerHub</h3>
-            <p className="text-gray-400">
-              Connecting talent with opportunities
-            </p>
+          <div className="h-full">
+            <Link href="/" className="flex items-center justify-start gap-2">
+              <Image
+                src={Logo}
+                alt="logo"
+                height={10}
+                width={10}
+                className="h-8 w-8"
+              />
+              <div className="flex flex-col items-start justify-start text-base border-l-2 border-white text-white pl-2">
+                <span className="text-base leading-4">nullchemy</span>
+                <span className="text-base leading-4">careers</span>
+              </div>
+            </Link>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">For Job Seekers</h4>
@@ -74,23 +86,20 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Connect with Us</h4>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-blue-400">
-                <Facebook size={24} />
-              </a>
-              <a href="#" className="hover:text-blue-400">
                 <Twitter size={24} />
               </a>
               <a href="#" className="hover:text-blue-400">
                 <LinkedIn size={24} />
               </a>
               <a href="#" className="hover:text-blue-400">
-                <Instagram size={24} />
+                <Github size={24} />
               </a>
             </div>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
           <p>
-            &copy; {new Date().getFullYear()} CareerHub. All rights reserved.
+            &copy; {new Date().getFullYear()} nullchemy. All rights reserved.
           </p>
         </div>
       </div>

@@ -27,6 +27,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
+  Bookmark,
 } from 'lucide-react'
 import { useAppDispatch } from '@/store/hooks'
 import { setTab } from '@/store/slices/tabSlice'
@@ -35,6 +36,8 @@ import { toast } from 'react-toastify'
 import { setCache } from '@/store/slices/stackcacheSlice'
 import { useRouter } from 'next/navigation'
 import { Skeleton } from '@/components/ui/skeleton'
+import formatDate from '@/lib/formatDate'
+import format from '@/lib/formatCurrency'
 
 function JobSearchSkeleton() {
   return (
@@ -132,6 +135,8 @@ export default function Jobs() {
     return matches.map(Number)
   }
 
+  console.log(jobsData)
+
   const filteredJobs = jobsData.filter((job) => {
     const matchesSearch =
       searchTerm === '' ||
@@ -139,7 +144,8 @@ export default function Jobs() {
       job.company.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesType =
-      jobType === 'all' || job.type.toLowerCase() === jobType.toLowerCase()
+      jobType === 'all' ||
+      job.employmentType.toLowerCase() === jobType.toLowerCase()
 
     const matchesLocation =
       location === '' ||
@@ -171,8 +177,9 @@ export default function Jobs() {
     return <JobSearchSkeleton />
   }
 
+  console.log(jobsData)
   return (
-    <div className="h-full py-8 px-4 sm:px-6 lg:px-8">
+    <div className="h-full py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-indigo-100 via-blue-100 to-pink-100">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Find Your Dream Job</h1>
 
@@ -184,7 +191,7 @@ export default function Jobs() {
                 placeholder="Search jobs..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
+                className="w-full border border-black outline-none"
               />
             </div>
             <Button className="w-full md:w-auto h-12">
@@ -194,112 +201,139 @@ export default function Jobs() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div>
-            <Label htmlFor="jobType">Job Type</Label>
-            <Select value={jobType} onValueChange={setJobType}>
-              <SelectTrigger id="jobType">
-                <SelectValue placeholder="Select job type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Full-time">Full-time</SelectItem>
-                <SelectItem value="Part-time">Part-time</SelectItem>
-                <SelectItem value="Contract">Contract</SelectItem>
-                <SelectItem value="Internship">Internship</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              placeholder="Enter location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="h-9"
-            />
-          </div>
-          <div>
-            <Label>Salary Range</Label>
-            <Slider
-              min={0}
-              max={200000}
-              step={10000}
-              value={salaryRange}
-              onValueChange={setSalaryRange}
-              className="mt-2"
-            />
-            <div className="flex justify-between mt-1 text-sm text-gray-500">
-              <span>${salaryRange[0].toLocaleString()}</span>
-              <span>${salaryRange[1].toLocaleString()}</span>
+        <div className="flex gap-4">
+          <div className="flex flex-col gap-2 w-1/4">
+            <div>
+              <Label htmlFor="jobType">Job Type</Label>
+              <Select value={jobType} onValueChange={setJobType}>
+                <SelectTrigger
+                  id="jobType"
+                  className="text-black border border-black"
+                >
+                  <SelectValue placeholder="Select job type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Full-time">Full-time</SelectItem>
+                  <SelectItem value="Part-time">Part-time</SelectItem>
+                  <SelectItem value="Contract">Contract</SelectItem>
+                  <SelectItem value="Internship">Internship</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                placeholder="Enter location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="h-9 border border-black text-black"
+              />
+            </div>
+            <div>
+              <Label>Salary Range</Label>
+              <Slider
+                min={0}
+                max={200000}
+                step={10000}
+                value={salaryRange}
+                onValueChange={setSalaryRange}
+                className="mt-2 border-black"
+              />
+              <div className="flex justify-between mt-1 text-sm text-black">
+                <span>Ksh. {salaryRange[0].toLocaleString()}</span>
+                <span>Ksh. {salaryRange[1].toLocaleString()}</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="remote-only"
+                checked={remoteOnly}
+                onCheckedChange={setRemoteOnly}
+              />
+              <Label htmlFor="remote-only">Remote Only</Label>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="remote-only"
-              checked={remoteOnly}
-              onCheckedChange={setRemoteOnly}
-            />
-            <Label htmlFor="remote-only">Remote Only</Label>
-          </div>
-        </div>
 
-        <div className="space-y-6 pb-6">
-          {currentJobs.map((job: any) => (
-            <Card
-              key={job._id}
-              onClick={() =>
-                job.application_form
-                  ? router.push(`/job/${job.application_form?._id}`, {
-                      scroll: true,
-                    })
-                  : () => {}
-              }
-              className="cursor-pointer"
-              title={job.title}
-            >
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">{job.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <Briefcase className="w-5 h-5 mr-2" />
-                    <span>{job.company}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="w-5 h-5 mr-2" />
-                    <span>{job.location}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="w-5 h-5 mr-2" />
-                    <span>{job.type}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <DollarSign className="w-5 h-5 mr-2" />
-                    <span>{job.salary}</span>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">
-                  Posted on {job.postedDate}
-                </span>
-                {!job.application_form ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      dispatch(setTab({ tab: 'new-job-form' }))
-                      dispatch(setCache({ cache: job }))
-                    }}
-                  >
-                    Create Application Form
-                  </Button>
-                ) : null}
-              </CardFooter>
-            </Card>
-          ))}
+          <div className="space-y-6 pb-6 flex-1">
+            {currentJobs.map((job: any) => {
+              const salrange = job.salary
+                .split(' - ')
+                .map((val: string) => format(parseInt(val)))
+                .join(' - ')
+              return (
+                <Card
+                  key={job._id}
+                  onClick={() =>
+                    job.application_form
+                      ? router.push(`/job/${job.application_form?._id}`, {
+                          scroll: true,
+                        })
+                      : () => {}
+                  }
+                  className="cursor-pointer"
+                  title={job.title}
+                >
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-2xl font-bold">
+                        {job.title}
+                      </CardTitle>
+                      <div className="p-2" onClick={(e) => e.stopPropagation()}>
+                        <Bookmark className="w-6 h-6 cursor-pointer" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex items-center">
+                        <Briefcase className="w-5 h-5 mr-2" />
+                        <span>{job.company}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="w-5 h-5 mr-2" />
+                        <span>{job.location}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-5 h-5 mr-2" />
+                        <span>{job.employmentType}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span>{salrange}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between items-center">
+                    <div className="flex items-start justify-start text-start gap-2">
+                      <div className="">
+                        <span className="text-sm text-gray-500 mb-2 pr-2">
+                          Posted on {formatDate(job.createdAt)}
+                        </span>
+                      </div>
+                      <div className="border-l border-gray-500 pl-2">
+                        <span className="text-sm text-gray-500">
+                          Deadline {formatDate(job.applicationDeadline)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {!job.application_form ? (
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          dispatch(setTab({ tab: 'new-job-form' }))
+                          dispatch(setCache({ cache: job }))
+                        }}
+                      >
+                        Create Application Form
+                      </Button>
+                    ) : null}
+                  </CardFooter>
+                </Card>
+              )
+            })}
+          </div>
         </div>
 
         {filteredJobs.length > jobsPerPage && (

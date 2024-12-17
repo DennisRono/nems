@@ -6,7 +6,7 @@ const Landing = () => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+    <div className="bg-gradient-to-r from-indigo-300 to-purple-300 text-black">
       <div className="container mx-auto px-4 py-16 md:py-24">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 text-center">
           Find Your Dream Job

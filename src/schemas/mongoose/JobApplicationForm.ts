@@ -1,12 +1,28 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-// Interfaces
+interface IGroupField {
+  label: string
+  type: 'input' | 'select' | 'textarea'
+  description?: string
+  options?: string[]
+}
+
 interface IFormField {
   id: string
   label: string
-  type: 'input' | 'textarea' | 'select' | 'upload'
+  type:
+    | 'input'
+    | 'textarea'
+    | 'select'
+    | 'upload'
+    | 'radio'
+    | 'checkbox'
+    | 'input-group'
   required: boolean
+  description?: string
   options?: string[]
+  groupFields?: IGroupField[]
+  isRepeatable?: boolean
 }
 
 interface IFormStep {
@@ -24,17 +40,38 @@ interface IJobApplicationForm extends Document {
   updatedAt: Date
 }
 
-// Schemas
+const GroupFieldSchema = new Schema<IGroupField>({
+  label: { type: String, required: true },
+  type: {
+    type: String,
+    enum: ['input', 'select', 'textarea'],
+    required: true,
+  },
+  description: { type: String },
+  options: [{ type: String }],
+})
+
 const FormFieldSchema = new Schema<IFormField>({
   id: { type: String, required: true },
   label: { type: String, required: true },
   type: {
     type: String,
-    enum: ['input', 'textarea', 'select', 'upload'],
+    enum: [
+      'input',
+      'textarea',
+      'select',
+      'upload',
+      'radio',
+      'checkbox',
+      'input-group',
+    ],
     required: true,
   },
   required: { type: Boolean, default: false },
+  description: { type: String },
   options: [{ type: String }],
+  groupFields: [GroupFieldSchema],
+  isRepeatable: { type: Boolean, default: false },
 })
 
 const FormStepSchema = new Schema<IFormStep>({
@@ -57,7 +94,6 @@ const JobApplicationFormSchema = new Schema<IJobApplicationForm>(
   { timestamps: true }
 )
 
-// Model
 const JobApplicationForm =
   mongoose.models?.JobApplicationForm ||
   mongoose.model<IJobApplicationForm>(

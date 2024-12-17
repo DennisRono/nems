@@ -1,100 +1,131 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Search, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
+import Logo from '@/assets/images/Circle_Logo.svg'
+import { Button } from '@/components/ui/button'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const navItems = [
+    { href: '/jobs', label: 'Jobs' },
+    { href: '/companies', label: 'Companies' },
+    { href: '/about', label: 'About' },
+  ]
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const NavItems = () => (
+    <>
+      {navItems.map((item) => (
+        <li key={item.href}>
+          <Link
+            href={item.href}
+            className="hover:text-blue-600"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {item.label}
+          </Link>
+        </li>
+      ))}
+    </>
+  )
+
   return (
-    <header className="bg-white shadow-md">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl uppercase font-bold text-black">
-          nullchemy careers
-        </Link>
-        <div className="hidden md:flex items-center space-x-6">
-          <nav>
+    <header className="bg-white shadow-md relative z-50">
+      <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center space-x-6">
+          <Link href="/" className="flex items-center justify-start gap-2">
+            <Image
+              src={Logo}
+              alt="logo"
+              height={10}
+              width={10}
+              className="h-8 w-8"
+            />
+            <div className="flex flex-col items-start justify-start text-base border-l-2 border-black pl-2">
+              <span className="text-base leading-4">nullchemy</span>
+              <span className="text-base leading-4">careers</span>
+            </div>
+          </Link>
+          <nav className="hidden md:block">
             <ul className="flex space-x-6">
-              <li>
-                <Link href="/jobs" className="hover:text-blue-600">
-                  Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/companies" className="hover:text-blue-600">
-                  Companies
-                </Link>
-              </li>
-              <li>
-                <Link href="/resources" className="hover:text-blue-600">
-                  Resources
-                </Link>
-              </li>
+              <NavItems />
             </ul>
           </nav>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search jobs..."
-              className="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-            <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-          </div>
         </div>
-        <button
+        <div className="hidden md:flex items-center space-x-4">
+          <Button variant="outline">Log In</Button>
+          <Button>Create Account</Button>
+        </div>
+        <Button
+          variant="outline"
+          size="icon"
           className="md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={toggleMenu}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
         >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          {isMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+          <span className="sr-only">Toggle navigation menu</span>
+        </Button>
+      </div>
+      <div
+        id="mobile-menu"
+        className={`fixed inset-y-0 left-0 transform ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        } w-[300px] bg-white shadow-lg transition duration-300 ease-in-out z-40 md:hidden h-screen`}
+      >
+        <nav className="flex flex-col h-full">
+          <div className="px-6 py-3 flex items-center justify-between gap-2">
+            <h2 className="text-xl font-semibold">Navigation</h2>
+            <X className="h-6 w-6 cursor-pointer" onClick={toggleMenu} />
+          </div>
+          <div className="h-[50vh] overflow-y-auto py-6 px-6">
+            <ul className="space-y-4">
+              <NavItems />
+            </ul>
+          </div>
+          <div className="mt-auto p-6 border-t space-y-4">
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Log In
+            </Button>
+            <Button className="w-full" onClick={() => setIsMenuOpen(false)}>
+              Create Account
+            </Button>
+          </div>
+        </nav>
       </div>
       {isMenuOpen && (
-        <div className="md:hidden bg-white py-4">
-          <nav className="container mx-auto px-4">
-            <ul className="space-y-4">
-              <li>
-                <Link href="/jobs" className="block hover:text-blue-600">
-                  Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/companies" className="block hover:text-blue-600">
-                  Companies
-                </Link>
-              </li>
-              <li>
-                <Link href="/resources" className="block hover:text-blue-600">
-                  Resources
-                </Link>
-              </li>
-              <li>
-                <div className="relative mt-4">
-                  <input
-                    type="text"
-                    placeholder="Search jobs..."
-                    className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                  <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
-                  />
-                </div>
-              </li>
-              <li>
-                <Link
-                  href="/post-job"
-                  className="block bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-center mt-4"
-                >
-                  Post a Job
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden="true"
+        ></div>
       )}
     </header>
   )
